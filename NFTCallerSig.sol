@@ -51,7 +51,7 @@ contract NFTCaller {
             );
             require(
                 success && (data.length == 0 || abi.decode(data, (bool))),
-                "Transfer_Token_Faliled"
+                "NFT_MINT_Faliled"
             );
         }
     }
@@ -59,9 +59,30 @@ contract NFTCaller {
     function assertValidCosign(bytes memory data)
         internal
         returns (
-            address[] memory _nftcontract,
-            address[] memory _receivers,
-            uint64[] memory _amounts
+            address[] memory,
+            address[] memory,
+            uint64[] memory
+        )
+    {
+        (
+            address[] memory nftcontract,
+            address[] memory receivers,
+            uint64[] memory amounts,
+            string memory requestId
+        ) = _assertValidCosign(data);
+
+        sigvalue[requestId] = true;
+        return (nftcontract, receivers, amounts);
+    }
+
+    function _assertValidCosign(bytes memory data)
+        public
+        view
+        returns (
+            address[] memory,
+            address[] memory,
+            uint64[] memory,
+            string memory
         )
     {
         (
@@ -75,39 +96,6 @@ contract NFTCaller {
         require(receivers.length != 0, "please enter the acceptance address");
         require(nftcontract.length == amounts.length, "Unmatched length");
         require(amounts.length == receivers.length, "Unmatched length");
-
-        require((expireTime + timestamp >= block.timestamp), "HAS_Expired");
-        require((!sigvalue[requestId]), "HAS_USED");
-        sigvalue[requestId] = true;
-        if (
-            !SignatureChecker.isValidSignatureNow(
-                cosigner,
-                getCosignDigest(
-                    msg.sender,
-                    nftcontract,
-                    receivers,
-                    amounts,
-                    _chainID(),
-                    requestId,
-                    timestamp
-                ),
-                sig
-            )
-        ) {
-            revert notSatifiedSig();
-        }
-        return (nftcontract, receivers, amounts);
-    }
-
-    function _assertValidCosign(bytes memory data) public view {
-        (
-            address[] memory nftcontract,
-            address[] memory receivers,
-            uint64[] memory amounts,
-            string memory requestId,
-            uint64 timestamp,
-            bytes memory sig
-        ) = decode(data);
         require((expireTime + timestamp >= block.timestamp), "HAS_Expired");
         require((!sigvalue[requestId]), "HAS_USED");
 
@@ -128,6 +116,7 @@ contract NFTCaller {
         ) {
             revert notSatifiedSig();
         }
+        return (nftcontract, receivers, amounts, requestId);
     }
 
     /**
@@ -176,7 +165,7 @@ contract NFTCaller {
         string memory requestId,
         uint64 timestamp,
         bytes memory sig
-    ) external view returns (bytes memory data) {
+    ) internal view returns (bytes memory data) {
         data = abi.encode(
             address(this),
             msg.sender,
