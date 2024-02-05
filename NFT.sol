@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.19;
 
-import "erc721a/contracts/ERC721A.sol";
+import "erc721a/contracts/extensions/ERC721AQueryable.sol";
 
-contract SC721 is ERC721A {
+contract SC721 is ERC721AQueryable {
     address public owner;
     address public nftcaller;
     error NotOwnerAuthorized();
@@ -41,7 +41,7 @@ contract SC721 is ERC721A {
         nftcaller = newcaller;
     }
 
-    function mint(address receiver, uint256 amount) external {
+    function mint(address receiver, uint256 amount) external onlyOwner{
         _mint(receiver, amount);
     }
 
