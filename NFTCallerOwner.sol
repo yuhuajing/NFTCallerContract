@@ -1,6 +1,7 @@
-
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity 0.8.22;
+pragma solidity ^0.8.19;
+
+import "erc721a/contracts/extensions/IERC721AQueryable.sol";
 
 contract NFTCaller {
     address public owner;
@@ -40,6 +41,22 @@ contract NFTCaller {
                 "Transfer_Token_Faliled"
             );
         }
+    }
+
+    function ownerOf(address nftcontract, uint256 nftid)
+        external
+        view
+        returns (address nftowner)
+    {
+        nftowner = IERC721A(nftcontract).ownerOf(nftid);
+    }
+
+    function nfts(address nftcontract, address nftowner)
+        external
+        view
+        returns (uint256[] memory ids)
+    {
+        ids = IERC721AQueryable(nftcontract).tokensOfOwner(nftowner);
     }
 
     fallback() external payable {}
