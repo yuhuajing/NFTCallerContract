@@ -51,12 +51,20 @@ contract NFTCaller {
         nftowner = IERC721A(nftcontract).ownerOf(nftid);
     }
 
-    function nfts(address nftcontract, address nftowner)
+    function nftIds(address nftcontract, address nftowner)
         external
         view
         returns (uint256[] memory ids)
     {
         ids = IERC721AQueryable(nftcontract).tokensOfOwner(nftowner);
+    }
+
+    function totalMinted(address nftcontract)
+        external
+        view
+        returns (uint256 totalnfts)
+    {
+        totalnfts = IERC721AQueryable(nftcontract).totalSupply();
     }
 
     fallback() external payable {}
