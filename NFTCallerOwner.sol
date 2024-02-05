@@ -5,14 +5,21 @@ import "erc721a/contracts/extensions/IERC721AQueryable.sol";
 
 contract NFTCaller {
     address public owner;
+    address public miner;
     error NotOwnerAuthorized();
+    error NotMineAuthorized();
 
-    constructor() payable {
-        owner = msg.sender;
+    constructor(address _owner, address _miner) payable {
+        owner = _owner;
+        miner = _miner;
     }
 
     modifier onlyOwner() {
         if (msg.sender != owner) revert NotOwnerAuthorized();
+        _;
+    }
+    modifier onlyMiner() {
+        if (msg.sender != miner) revert NotMineAuthorized();
         _;
     }
 
@@ -21,11 +28,16 @@ contract NFTCaller {
         owner = newowner;
     }
 
+    function updateMiner(address newminer) external onlyOwner {
+        require(newminer != address(0), "Invalid miner");
+        miner = newminer;
+    }
+
     function batchMintNFT(
         address[] calldata nftcontract,
         address[] calldata receivers,
         uint256[] calldata amounts
-    ) external payable onlyOwner {
+    ) external payable onlyMiner {
         require(receivers.length != 0, "please enter the acceptance address");
         require(nftcontract.length == amounts.length, "Unmatched length");
         require(amounts.length == receivers.length, "Unmatched length");
