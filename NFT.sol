@@ -6,16 +6,19 @@ import "erc721a/contracts/extensions/ERC721AQueryable.sol";
 contract SC721 is ERC721AQueryable {
     address public owner;
     address public nftcaller;
+    string baseurl;
     error NotOwnerAuthorized();
     error NotNFTCallercontract();
 
     constructor(
         string memory name,
         string memory symbol,
+        string memory _baseurl,
         address _nftcaller
     ) payable ERC721A(name, symbol) {
         owner = msg.sender;
         nftcaller = _nftcaller;
+        baseurl = _baseurl;
     }
 
     modifier onlyOwner() {
@@ -32,6 +35,11 @@ contract SC721 is ERC721AQueryable {
         owner = newowner;
     }
 
+    function updateBaseURL(string memory _baseurl) external onlyOwner {
+        require(bytes(_baseurl).length != 0, "Invalid baseurl");
+        baseurl = _baseurl;
+    }
+
     function totalMinted() external view returns (uint256) {
         return _nextTokenId();
     }
@@ -41,7 +49,7 @@ contract SC721 is ERC721AQueryable {
         nftcaller = newcaller;
     }
 
-    function mint(address receiver, uint256 amount) external onlyOwner{
+    function mint(address receiver, uint256 amount) external onlyOwner {
         _mint(receiver, amount);
     }
 
@@ -50,5 +58,19 @@ contract SC721 is ERC721AQueryable {
         onlynftCaller
     {
         _mint(receiver, amount);
+    }
+
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        virtual
+        override(ERC721A, IERC721A)
+        returns (string memory)
+    {
+        if (!_exists(tokenId)) revert URIQueryForNonexistentToken();
+        return
+            bytes(baseurl).length != 0
+                ? string(abi.encodePacked(baseurl, _toString(tokenId), ".json"))
+                : "";
     }
 }
