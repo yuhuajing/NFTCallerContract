@@ -55,28 +55,28 @@ contract NFTCaller {
         }
     }
 
-    function ownerOf(address nftcontract, uint256 nftid)
+    function ownerOf(IERC721AQueryable nftcontract, uint256 nftid)
         external
         view
         returns (address nftowner)
     {
-        nftowner = IERC721A(nftcontract).ownerOf(nftid);
+        nftowner = nftcontract.ownerOf(nftid);
     }
 
-    function nftIds(address nftcontract, address nftowner)
+    function nftIds(IERC721AQueryable nftcontract, address nftowner)
         external
         view
         returns (uint256[] memory ids)
     {
-        ids = IERC721AQueryable(nftcontract).tokensOfOwner(nftowner);
+        ids = nftcontract.tokensOfOwner(nftowner);
     }
 
-    function totalMinted(address nftcontract)
+    function totalMinted(IERC721AQueryable nftcontract)
         external
         view
         returns (uint256 totalnfts)
     {
-        totalnfts = IERC721AQueryable(nftcontract).totalSupply();
+        totalnfts = nftcontract.totalSupply();
     }
 
     fallback() external payable {}
