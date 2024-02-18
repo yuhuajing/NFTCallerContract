@@ -108,17 +108,17 @@ contract SC721 is ERC721AQueryable {
     }
 
     function userMintNFT(bytes memory encodedsig) external {
-        (address receiver, uint64 amount) = assertValidCosign(encodedsig);
+        (address receiver, uint32 amount) = assertValidCosign(encodedsig);
         _mint(receiver, amount);
     }
 
     function assertValidCosign(bytes memory data)
         internal
-        returns (address, uint64)
+        returns (address, uint32)
     {
         (
             address receivers,
-            uint64 amounts,
+            uint32 amounts,
             string memory requestId
         ) = _assertValidCosign(data);
         sigvalue[requestId] = true;
@@ -130,13 +130,13 @@ contract SC721 is ERC721AQueryable {
         view
         returns (
             address,
-            uint64,
+            uint32,
             string memory
         )
     {
         (
             address receivers,
-            uint64 amounts,
+            uint32 amounts,
             string memory requestId,
             uint64 timestamp,
             bytes memory sig
@@ -169,7 +169,7 @@ contract SC721 is ERC721AQueryable {
     function getCosignDigest(
         address sender,
         address receivers,
-        uint64 amounts,
+        uint32 amounts,
         uint32 chainId,
         string memory requestId,
         uint64 timestamp
@@ -205,7 +205,7 @@ contract SC721 is ERC721AQueryable {
         pure
         returns (
             address receivers,
-            uint64 amounts,
+            uint32 amounts,
             string memory requestId,
             uint64 timestamp,
             bytes memory sig
@@ -218,7 +218,7 @@ contract SC721 is ERC721AQueryable {
                 address,
                 address,
                 address,
-                uint64,
+                uint32,
                 uint32,
                 string,
                 uint64,
