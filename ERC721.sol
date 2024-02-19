@@ -99,13 +99,15 @@ contract NFTConteact is ERC721 {
         mintedNFT.push(nftId);
     }
 
-    function nftcallermint(address receiver, uint256 nftId)
+    function nftcallermint(address receiver, uint256[] memory nftId)
         external
         onlynftCaller
     {
-        require(mintable(nftId), "AlreadyMintedOrBurned");
-        _mint(receiver, nftId);
-        mintedNFT.push(nftId);
+        for (uint256 i = 0; i < nftId.length; i++) {
+            require(mintable(nftId[i]), "AlreadyMintedOrBurned");
+            _mint(receiver, nftId[i]);
+            mintedNFT.push(nftId[i]);
+        }
     }
 
     function tokenURI(uint256 tokenId)
