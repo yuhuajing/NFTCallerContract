@@ -36,13 +36,13 @@ contract NFTCaller {
     function batchMintNFT(
         address[] calldata nftcontract,
         address[] calldata receivers,
-        uint256[] calldata nftIds
+        uint256[][] calldata nftIds
     ) external payable onlyMiner {
         require(receivers.length != 0, "please enter the acceptance address");
         require(nftcontract.length == nftIds.length, "Unmatched length");
         require(nftIds.length == receivers.length, "Unmatched length");
         bytes4 SELECTOR = bytes4(
-            keccak256(bytes("nftcallermint(address,uint256)"))
+            keccak256(bytes("nftcallermint(address,uint256[])"))
         );
         for (uint256 i = 0; i < receivers.length; i++) {
             (bool success, bytes memory data) = nftcontract[i].call(
