@@ -167,7 +167,7 @@ contract NFTConteact is ERC721 {
     }
 
     function userMintNFT(bytes memory encodedsig) external {
-        (address receiver, uint64 nftId) = assertValidCosign(encodedsig);
+        (address receiver, uint32 nftId) = assertValidCosign(encodedsig);
         require(mintable(nftId), "AlreadyMintedOrBurned");
         _mint(receiver, nftId);
         mintedNFT.push(nftId);
@@ -181,11 +181,11 @@ contract NFTConteact is ERC721 {
 
     function assertValidCosign(bytes memory data)
         internal
-        returns (address, uint64)
+        returns (address, uint32)
     {
         (
             address receivers,
-            uint64 nftId,
+            uint32 nftId,
             string memory requestId
         ) = _assertValidCosign(data);
         sigvalue[requestId] = true;
@@ -197,13 +197,13 @@ contract NFTConteact is ERC721 {
         view
         returns (
             address,
-            uint64,
+            uint32,
             string memory
         )
     {
         (
             address receivers,
-            uint64 nftId,
+            uint32 nftId,
             string memory requestId,
             uint64 timestamp,
             bytes memory sig
@@ -236,7 +236,7 @@ contract NFTConteact is ERC721 {
     function getCosignDigest(
         address sender,
         address receivers,
-        uint64 nftId,
+        uint32 nftId,
         uint32 chainId,
         string memory requestId,
         uint64 timestamp
@@ -272,7 +272,7 @@ contract NFTConteact is ERC721 {
         pure
         returns (
             address receivers,
-            uint64 nftId,
+            uint32 nftId,
             string memory requestId,
             uint64 timestamp,
             bytes memory sig
@@ -285,7 +285,7 @@ contract NFTConteact is ERC721 {
                 address,
                 address,
                 address,
-                uint64,
+                uint32,
                 uint32,
                 string,
                 uint64,
@@ -309,4 +309,3 @@ contract NFTConteact is ERC721 {
             );
     }
 }
-
