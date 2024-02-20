@@ -50,7 +50,7 @@ contract NFTCaller {
             );
             require(
                 success && (data.length == 0 || abi.decode(data, (bool))),
-                "Transfer_Token_Faliled"
+                "Mint_NFT_Faliled"
             );
         }
     }
