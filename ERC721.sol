@@ -4,7 +4,7 @@ pragma solidity ^0.8.19;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 
-contract NFTConteact is ERC721 {
+contract NFTContract is ERC721 {
     address public owner;
     address public miner;
     address public nftcaller;
