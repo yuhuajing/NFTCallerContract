@@ -93,10 +93,15 @@ contract NFTContract is ERC721 {
         return (mintedNFT.length, mintedNFT);
     }
 
-    function minerMint(address receiver, uint256 nftId) external onlyMiner {
-        require(mintable(nftId), "AlreadyMintedOrBurned");
-        _mint(receiver, nftId);
-        mintedNFT.push(nftId);
+    function minerMint(address receiver, uint256[] memory nftId)
+        external
+        onlyMiner
+    {
+        for (uint256 i = 0; i < nftId.length; i++) {
+            require(mintable(nftId[i]), "AlreadyMintedOrBurned");
+            _mint(receiver, nftId[i]);
+            mintedNFT.push(nftId[i]);
+        }
     }
 
     function nftcallermint(address receiver, uint256[] memory nftId)
